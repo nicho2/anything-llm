@@ -29,4 +29,23 @@ stages:
         dockerfile: '$(Build.SourcesDirectory)/docker/Dockerfile'
         buildContext: '$(Build.SourcesDirectory)'
         tags: |
+          $(tag)          
+- stage: ARM64
+  displayName: Build image
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: CmdLine@2
+      displayName: 'Install emulator'
+      inputs:
+        script: 'sudo apt-get install -y qemu qemu-user-static'    
+    - task: Docker@2
+      displayName: Build an image
+      inputs:
+        command: build
+        dockerfile: '$(Build.SourcesDirectory)/docker/Dockerfile'
+        tags: |
           $(tag)
