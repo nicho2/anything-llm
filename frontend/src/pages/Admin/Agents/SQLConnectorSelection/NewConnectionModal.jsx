@@ -237,11 +237,9 @@ export default function NewSQLConnection({ isOpen, closeModal, onSubmit }) {
                 />
               </div>
 
-              {
-                engine === "odbc" &&
+              {engine === "odbc" && (
                 <div className="flex flex-col">
-                  <label
-                    className="text-white text-sm font-semibold block mb-3">
+                  <label className="text-white text-sm font-semibold block mb-3">
                     Driver
                   </label>
                   <input
@@ -254,7 +252,7 @@ export default function NewSQLConnection({ isOpen, closeModal, onSubmit }) {
                     spellCheck={false}
                   />
                 </div>
-              }
+              )}
               <p className="text-white/40 text-sm">
                 {assembleConnectionString({ engine, ...config })}
               </p>
