@@ -23,9 +23,10 @@ stages:
     - task: Docker@2
       displayName: Build an image
       inputs:
-        command: build
+        containerRegistry: 'push to docker'
+        command: 'buildAndPush'
+        repository: 'nicho267/anythingllm'
         dockerfile: '$(Build.SourcesDirectory)/docker/Dockerfile'
         buildContext: '$(Build.SourcesDirectory)'
         tags: |
           $(tag)
-
