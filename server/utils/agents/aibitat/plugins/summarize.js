@@ -52,7 +52,7 @@ const docSummarizer = {
                 type: "string",
                 "x-nullable": true,
                 description:
-                  "The file name of the document you want to get the full content of.",
+                  "The file name of the document you want to get the full content of. This key must always be present in the response, even if its value is null.",
               },
             },
             additionalProperties: false,
