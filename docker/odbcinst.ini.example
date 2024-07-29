@@ -1,0 +1,14 @@
+; this file is copied in /etc/odbcinst.ini
+; "MongoDBODBC ANSI" is the driver name for ODBC
+[MongoDBODBC Unicode]
+Description = ODBC for MongoDB BI Connector
+Driver = /usr/local/lib/libmdbodbcw.so
+FileUsage       = 1
+
+[MongoDBODBC ANSI]
+Description = ODBC for MongoDB BI Connector
+Driver = /usr/local/lib/libmdbodbca.so
+READONLY    = yes
+TRACE = On
+TRACEFILE = stderr
+FileUsage = 1

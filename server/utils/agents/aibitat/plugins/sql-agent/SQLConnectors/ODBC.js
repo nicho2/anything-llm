@@ -42,7 +42,14 @@ class ODBCConnector {
       console.log(this.constructor.name, err);
       result.error = err.message;
     } finally {
-      await this._client.close();
+      try {   // can have a problem with mongoDB odbc driver (linux)
+        // [MySQL][ODBC 1.4(a) Driver]Underlying server does not support transactions, upgrade to version >= 3.23.38
+        await this._client.close();
+      } catch (closeErr) {
+        console.log(this.constructor.name, "Error closing client:", closeErr);
+        // Optionally, you could add this to the result object
+        // result.error = result.error ? result.error + '; ' + closeErr.message : closeErr.message;
+      }
       this.#connected = false;
     }
     return result;
