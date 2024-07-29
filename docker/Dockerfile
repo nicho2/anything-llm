@@ -106,7 +106,7 @@ COPY ./docker/docker-healthcheck.sh /usr/local/bin/
 COPY --chown=anythingllm:anythingllm ./docker/.env.example /app/server/.env
 
 # copy dependance file
-COPY ./docker/odbcinst.ini.exapmle /etc/odbcinst.ini
+COPY ./docker/odbcinst.ini.example /etc/odbcinst.ini
 
 # Ensure the scripts are executable
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh && \
