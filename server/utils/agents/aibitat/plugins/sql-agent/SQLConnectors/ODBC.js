@@ -1,5 +1,18 @@
 const odbc = require("odbc");
-const UrlPattern = require("url-pattern");
+const sqlKeywords = new Set([
+  "SELECT", "FROM", "WHERE", "ORDER", "BY", "DESC", "ASC", "LIMIT",
+  "INSERT", "INTO", "VALUES", "UPDATE", "SET", "DELETE",
+  "JOIN", "INNER", "LEFT", "RIGHT", "FULL", "OUTER", "ON",
+  "GROUP", "HAVING", "DISTINCT", "UNION", "ALL",
+  "AS", "IN", "AND", "OR", "NOT", "NULL", "IS",
+  "BETWEEN", "LIKE", "ILIKE", "IN", "EXISTS",
+  "CREATE", "TABLE", "PRIMARY", "KEY", "FOREIGN", "REFERENCES",
+  "ALTER", "ADD", "DROP", "CONSTRAINT", "DEFAULT",
+  "DATABASE", "INDEX", "VIEW", "TRIGGER", "PROCEDURE", "FUNCTION",
+  "GRANT", "REVOKE", "WITH", "CHECK", "IF", "CASE", "WHEN", "THEN", "ELSE", "END",
+  "*", "SHOW", "COLUMNS"
+  // Ajouter plus de mots-clés SQL si nécessaire
+]);
 
 class ODBCConnector {
   #connected = false;
@@ -27,6 +40,34 @@ class ODBCConnector {
   }
 
   /**
+   * add backtick automaticaly
+   * @param {string} queryString the SQL query to be run
+   * @returns {string} transformedQueryString
+   */
+  addBackticks(queryString) {
+    let mysplit = queryString.split(" ");
+    let result = "";
+    if (queryString.includes("information_schema") || queryString.includes("SHOW COLUMNS FROM")) {
+      return queryString;
+    }
+    mysplit.forEach((element) => {
+      // Ignorer les mots-clés SQL
+      if (!sqlKeywords.has(element.toUpperCase()) && !element.match(/^\d+$/)) {
+        let parts = element.split("=");
+        if (parts.length === 1) {
+          result += `\`${element}\` `;
+        } else {
+          // Ajoute des backticks à la partie avant le signe égal
+          result += `\`${parts[0]}\`=${parts[1]} `;
+        }
+      } else {
+        result += element + " ";
+      }
+    });
+    return result.trim();
+  }
+
+  /**
    *
    * @param {string} queryString the SQL query to be run
    * @returns {import(".").QueryResult}
@@ -35,7 +76,8 @@ class ODBCConnector {
     const result = { rows: [], count: 0, error: null };
     try {
       if (!this.#connected) await this.connect();
-      const query = await this._client.query(queryString);
+      const transformedQueryString = this.addBackticks(queryString);
+      const query = await this._client.query(transformedQueryString);
       result.rows = query;
       result.count = query.length;
     } catch (err) {
@@ -60,7 +102,7 @@ class ODBCConnector {
   }
 
   getTableSchemaSql(table_name) {
-    return `SHOW COLUMNS FROM ${this.database_id}.${table_name};`;
+    return `SHOW COLUMNS FROM ${this.database_id}.\`${table_name}\`;`;
   }
 }
 

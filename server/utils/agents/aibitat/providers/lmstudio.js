@@ -56,7 +56,7 @@ class LMStudioProvider extends InheritMultiple([Provider, UnTooled]) {
   async complete(messages, functions = null) {
     try {
       let completion;
-      if (functions.length > 0) {
+      if (functions.length > 0 && messages.slice(-1)[0].role !== "function") {
         const { toolCall, text } = await this.functionCall(
           messages,
           functions,
