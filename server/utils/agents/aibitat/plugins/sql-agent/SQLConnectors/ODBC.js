@@ -10,7 +10,7 @@ const sqlKeywords = new Set([
   "ALTER", "ADD", "DROP", "CONSTRAINT", "DEFAULT",
   "DATABASE", "INDEX", "VIEW", "TRIGGER", "PROCEDURE", "FUNCTION",
   "GRANT", "REVOKE", "WITH", "CHECK", "IF", "CASE", "WHEN", "THEN", "ELSE", "END",
-  "*", "SHOW", "COLUMNS"
+  "*", "SHOW", "COLUMNS", "="
   // Ajouter plus de mots-clés SQL si nécessaire
 ]);
 
@@ -51,11 +51,20 @@ class ODBCConnector {
       return queryString;
     }
     mysplit.forEach((element) => {
+      console.log(element);
       // Ignorer les mots-clés SQL
       if (!sqlKeywords.has(element.toUpperCase()) && !element.match(/^\d+$/)) {
         let parts = element.split("=");
         if (parts.length === 1) {
-          result += `\`${element}\` `;
+          // si contient un point ou commence par un chiffre
+          if (
+            (element.match(/^\d/) || element.match(/\./)) &&
+            !element.match(/;/)
+          ) {
+            result += `\`${element}\` `;
+          } else {
+            result += `${element} `;
+          }
         } else {
           // Ajoute des backticks à la partie avant le signe égal
           result += `\`${parts[0]}\`=${parts[1]} `;
