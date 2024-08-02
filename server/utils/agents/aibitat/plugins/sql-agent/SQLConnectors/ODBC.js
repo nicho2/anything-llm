@@ -10,7 +10,7 @@ const sqlKeywords = new Set([
   "ALTER", "ADD", "DROP", "CONSTRAINT", "DEFAULT",
   "DATABASE", "INDEX", "VIEW", "TRIGGER", "PROCEDURE", "FUNCTION",
   "GRANT", "REVOKE", "WITH", "CHECK", "IF", "CASE", "WHEN", "THEN", "ELSE", "END",
-  "*", "SHOW", "COLUMNS", "="
+  "*", "SHOW", "COLUMNS", "=", "!=", ">", "<", ">=", "<="
   // Ajouter plus de mots-clés SQL si nécessaire
 ]);
 
@@ -51,7 +51,7 @@ class ODBCConnector {
       return queryString;
     }
     mysplit.forEach((element) => {
-      console.log(element);
+      //console.log(element);
       // Ignorer les mots-clés SQL
       if (!sqlKeywords.has(element.toUpperCase()) && !element.match(/^\d+$/)) {
         let parts = element.split("=");
@@ -86,6 +86,7 @@ class ODBCConnector {
     try {
       if (!this.#connected) await this.connect();
       const transformedQueryString = this.addBackticks(queryString);
+      console.log(this.constructor.name, "request with backtick",transformedQueryString);
       const query = await this._client.query(transformedQueryString);
       result.rows = query;
       result.count = query.length;
@@ -97,7 +98,7 @@ class ODBCConnector {
         // [MySQL][ODBC 1.4(a) Driver]Underlying server does not support transactions, upgrade to version >= 3.23.38
         await this._client.close();
       } catch (closeErr) {
-        console.log(this.constructor.name, "Error closing client:", closeErr);
+        console.log(this.constructor.name, "Error closing client (linux?):", closeErr);
         // Optionally, you could add this to the result object
         // result.error = result.error ? result.error + '; ' + closeErr.message : closeErr.message;
       }
