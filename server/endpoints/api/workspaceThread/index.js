@@ -90,6 +90,7 @@ function apiWorkspaceThreadEndpoints(app) {
           LLMSelection: process.env.LLM_PROVIDER || "openai",
           Embedder: process.env.EMBEDDING_ENGINE || "inherit",
           VectorDbSelection: process.env.VECTOR_DB || "lancedb",
+          TTSSelection: process.env.TTS_PROVIDER || "native",
         });
         await EventLogs.logEvent("api_workspace_thread_created", {
           workspaceName: workspace?.name || "Unknown Workspace",
@@ -109,7 +110,6 @@ function apiWorkspaceThreadEndpoints(app) {
       /*
       #swagger.tags = ['Workspace Threads']
       #swagger.description = 'Update thread name by its unique slug.'
-      #swagger.path = '/v1/workspace/{slug}/thread/{threadSlug}/update'
       #swagger.parameters['slug'] = {
           in: 'path',
           description: 'Unique slug of workspace',
@@ -416,6 +416,7 @@ function apiWorkspaceThreadEndpoints(app) {
           LLMSelection: process.env.LLM_PROVIDER || "openai",
           Embedder: process.env.EMBEDDING_ENGINE || "inherit",
           VectorDbSelection: process.env.VECTOR_DB || "lancedb",
+          TTSSelection: process.env.TTS_PROVIDER || "native",
         });
         await EventLogs.logEvent("api_sent_chat", {
           workspaceName: workspace?.name,
@@ -567,6 +568,7 @@ function apiWorkspaceThreadEndpoints(app) {
           LLMSelection: process.env.LLM_PROVIDER || "openai",
           Embedder: process.env.EMBEDDING_ENGINE || "inherit",
           VectorDbSelection: process.env.VECTOR_DB || "lancedb",
+          TTSSelection: process.env.TTS_PROVIDER || "native",
         });
         await EventLogs.logEvent("api_sent_chat", {
           workspaceName: workspace?.name,

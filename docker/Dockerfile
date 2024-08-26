@@ -177,9 +177,6 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV ANYTHING_LLM_RUNTIME=docker
 
-# Expose the server port
-EXPOSE 3001
-
 # Setup the healthcheck
 HEALTHCHECK --interval=1m --timeout=10s --start-period=1m \
   CMD /bin/bash /usr/local/bin/docker-healthcheck.sh || exit 1
