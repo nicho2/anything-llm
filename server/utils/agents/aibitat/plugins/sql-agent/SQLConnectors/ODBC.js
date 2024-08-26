@@ -77,6 +77,30 @@ class ODBCConnector {
   }
 
   /**
+   * convertBigIntsInObject
+   * @param  obj to convert
+   * @returns  obj converted
+   */
+  convertBigIntsInObject(obj) {
+    if (typeof obj !== "object" || obj === null) {
+      // Si ce n'est pas un objet, on retourne la valeur telle quelle
+      return obj;
+    }
+
+    // Parcourir les clés de l'objet
+    for (const key in obj) {
+      if (typeof obj[key] === "bigint") {
+        // Convertir BigInt en Number
+        obj[key] = Number(obj[key]);
+      } else if (typeof obj[key] === "object") {
+        // Appel récursif si l'élément est un objet ou un tableau
+        this.convertBigIntsInObject(obj[key]);
+      }
+    }
+    return obj;
+  }
+
+  /**
    *
    * @param {string} queryString the SQL query to be run
    * @returns {import(".").QueryResult}
@@ -88,7 +112,7 @@ class ODBCConnector {
       const transformedQueryString = this.addBackticks(queryString);
       console.log(this.constructor.name, "request with backtick",transformedQueryString);
       const query = await this._client.query(transformedQueryString);
-      result.rows = query;
+      result.rows = this.convertBigIntsInObject(query);
       result.count = query.length;
     } catch (err) {
       console.log(this.constructor.name, err);
