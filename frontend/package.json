@@ -12,7 +12,6 @@
     "windev": "set NODE_ENV=development& vite --debug --host=0.0.0.0"
   },
   "dependencies": {
-    "@metamask/jazzicon": "^2.0.0",
     "@microsoft/fetch-event-source": "^2.0.1",
     "@mintplex-labs/piper-tts-web": "^1.0.4",
     "@phosphor-icons/react": "^2.1.7",
