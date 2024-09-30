@@ -781,6 +781,10 @@ ${this.getHistory({ to: route.to })
         return new Providers.TextWebGenUiProvider({});
       case "bedrock":
         return new Providers.AWSBedrockProvider({});
+      case "fireworksai":
+        return new Providers.FireworksAIProvider({ model: config.model });
+      case "deepseek":
+        return new Providers.DeepSeekProvider({ model: config.model });
 
       default:
         throw new Error(

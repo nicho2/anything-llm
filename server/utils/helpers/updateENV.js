@@ -350,6 +350,16 @@ const KEY_MAPPING = {
     checks: [isNotEmpty],
   },
 
+  // Fireworks AI Options
+  FireworksAiLLMApiKey: {
+    envKey: "FIREWORKS_AI_LLM_API_KEY",
+    checks: [isNotEmpty],
+  },
+  FireworksAiLLMModelPref: {
+    envKey: "FIREWORKS_AI_LLM_MODEL_PREF",
+    checks: [isNotEmpty],
+  },
+
   // Perplexity Options
   PerplexityApiKey: {
     envKey: "PERPLEXITY_API_KEY",
@@ -491,6 +501,16 @@ const KEY_MAPPING = {
     envKey: "TTS_PIPER_VOICE_MODEL",
     checks: [],
   },
+
+  // DeepSeek Options
+  DeepSeekApiKey: {
+    envKey: "DEEPSEEK_API_KEY",
+    checks: [isNotEmpty],
+  },
+  DeepSeekModelPref: {
+    envKey: "DEEPSEEK_MODEL_PREF",
+    checks: [isNotEmpty],
+  },
 };
 
 function isNotEmpty(input = "") {
@@ -580,6 +600,7 @@ function supportedLLM(input = "") {
     "ollama",
     "native",
     "togetherai",
+    "fireworksai",
     "mistral",
     "huggingface",
     "perplexity",
@@ -591,6 +612,7 @@ function supportedLLM(input = "") {
     "litellm",
     "generic-openai",
     "bedrock",
+    "deepseek",
   ].includes(input);
   return validSelection ? null : `${input} is not a valid LLM provider.`;
 }
@@ -609,6 +631,9 @@ function validGeminiModel(input = "") {
     "gemini-1.5-pro-latest",
     "gemini-1.5-flash-latest",
     "gemini-1.5-pro-exp-0801",
+    "gemini-1.5-pro-exp-0827",
+    "gemini-1.5-flash-exp-0827",
+    "gemini-1.5-flash-8b-exp-0827",
   ];
   return validModels.includes(input)
     ? null

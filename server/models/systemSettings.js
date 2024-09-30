@@ -441,6 +441,10 @@ const SystemSettings = {
       TogetherAiApiKey: !!process.env.TOGETHER_AI_API_KEY,
       TogetherAiModelPref: process.env.TOGETHER_AI_MODEL_PREF,
 
+      // Fireworks AI API Keys
+      FireworksAiLLMApiKey: !!process.env.FIREWORKS_AI_LLM_API_KEY,
+      FireworksAiLLMModelPref: process.env.FIREWORKS_AI_LLM_MODEL_PREF,
+
       // Perplexity AI Keys
       PerplexityApiKey: !!process.env.PERPLEXITY_API_KEY,
       PerplexityModelPref: process.env.PERPLEXITY_MODEL_PREF,
@@ -502,6 +506,10 @@ const SystemSettings = {
 
       // VoyageAi API Keys
       VoyageAiApiKey: !!process.env.VOYAGEAI_API_KEY,
+
+      // DeepSeek API Keys
+      DeepSeekApiKey: !!process.env.DEEPSEEK_API_KEY,
+      DeepSeekModelPref: process.env.DEEPSEEK_MODEL_PREF,
     };
   },
 
