@@ -5,6 +5,9 @@ const { togetherAiModels } = require("../AiProviders/togetherAi");
 const { fireworksAiModels } = require("../AiProviders/fireworksAi");
 const { ElevenLabsTTS } = require("../TextToSpeech/elevenLabs");
 const { fetchNovitaModels } = require("../AiProviders/novita");
+const { parseLMStudioBasePath } = require("../AiProviders/lmStudio");
+const { parseNvidiaNimBasePath } = require("../AiProviders/nvidiaNim");
+
 const SUPPORT_CUSTOM_MODELS = [
   "openai",
   "localai",
@@ -12,6 +15,7 @@ const SUPPORT_CUSTOM_MODELS = [
   "native-llm",
   "togetherai",
   "fireworksai",
+  "nvidia-nim",
   "mistral",
   "perplexity",
   "openrouter",
@@ -67,6 +71,8 @@ async function getCustomModels(provider = "", apiKey = null, basePath = null) {
       return await getNovitaModels();
     case "xai":
       return await getXAIModels(apiKey);
+    case "nvidia-nim":
+      return await getNvidiaNimModels(basePath);
     default:
       return { models: [], error: "Invalid provider for custom models" };
   }
@@ -235,7 +241,9 @@ async function getLMStudioModels(basePath = null) {
   try {
     const { OpenAI: OpenAIApi } = require("openai");
     const openai = new OpenAIApi({
-      baseURL: basePath || process.env.LMSTUDIO_BASE_PATH,
+      baseURL: parseLMStudioBasePath(
+        basePath || process.env.LMSTUDIO_BASE_PATH
+      ),
       apiKey: null,
     });
     const models = await openai.models
@@ -515,6 +523,37 @@ async function getXAIModels(_apiKey = null) {
   // Api Key was successful so lets save it for future uses
   if (models.length > 0 && !!apiKey) process.env.XAI_LLM_API_KEY = apiKey;
   return { models, error: null };
+}
+
+async function getNvidiaNimModels(basePath = null) {
+  try {
+    const { OpenAI: OpenAIApi } = require("openai");
+    const openai = new OpenAIApi({
+      baseURL: parseNvidiaNimBasePath(
+        basePath ?? process.env.NVIDIA_NIM_LLM_BASE_PATH
+      ),
+      apiKey: null,
+    });
+    const modelResponse = await openai.models
+      .list()
+      .then((results) => results.data)
+      .catch((e) => {
+        throw new Error(e.message);
+      });
+
+    const models = modelResponse.map((model) => {
+      return {
+        id: model.id,
+        name: model.id,
+        organization: model.owned_by,
+      };
+    });
+
+    return { models, error: null };
+  } catch (e) {
+    console.error(`Nvidia NIM:getNvidiaNimModels`, e.message);
+    return { models: [], error: "Could not fetch Nvidia NIM Models" };
+  }
 }
 
 module.exports = {
