@@ -7,6 +7,7 @@ const { ElevenLabsTTS } = require("../TextToSpeech/elevenLabs");
 const { fetchNovitaModels } = require("../AiProviders/novita");
 const { parseLMStudioBasePath } = require("../AiProviders/lmStudio");
 const { parseNvidiaNimBasePath } = require("../AiProviders/nvidiaNim");
+const { GeminiLLM } = require("../AiProviders/gemini");
 
 const SUPPORT_CUSTOM_MODELS = [
   "openai",
@@ -28,6 +29,7 @@ const SUPPORT_CUSTOM_MODELS = [
   "apipie",
   "novita",
   "xai",
+  "gemini",
 ];
 
 async function getCustomModels(provider = "", apiKey = null, basePath = null) {
@@ -73,6 +75,8 @@ async function getCustomModels(provider = "", apiKey = null, basePath = null) {
       return await getXAIModels(apiKey);
     case "nvidia-nim":
       return await getNvidiaNimModels(basePath);
+    case "gemini":
+      return await getGeminiModels(apiKey);
     default:
       return { models: [], error: "Invalid provider for custom models" };
   }
@@ -141,9 +145,17 @@ async function openAiModels(apiKey = null) {
     });
 
   const gpts = allModels
-    .filter((model) => model.id.startsWith("gpt") || model.id.startsWith("o1"))
     .filter(
-      (model) => !model.id.includes("vision") && !model.id.includes("instruct")
+      (model) =>
+        (model.id.includes("gpt") && !model.id.startsWith("ft:")) ||
+        model.id.includes("o1")
+    )
+    .filter(
+      (model) =>
+        !model.id.includes("vision") &&
+        !model.id.includes("instruct") &&
+        !model.id.includes("audio") &&
+        !model.id.includes("realtime")
     )
     .map((model) => {
       return {
@@ -393,13 +405,21 @@ async function getAPIPieModels(apiKey = null) {
   if (!Object.keys(knownModels).length === 0)
     return { models: [], error: null };
 
-  const models = Object.values(knownModels).map((model) => {
-    return {
-      id: model.id,
-      organization: model.organization,
-      name: model.name,
-    };
-  });
+  const models = Object.values(knownModels)
+    .filter((model) => {
+      // Filter for chat models
+      return (
+        model.subtype &&
+        (model.subtype.includes("chat") || model.subtype.includes("chatx"))
+      );
+    })
+    .map((model) => {
+      return {
+        id: model.id,
+        organization: model.organization,
+        name: model.name,
+      };
+    });
   return { models, error: null };
 }
 
@@ -554,6 +574,17 @@ async function getNvidiaNimModels(basePath = null) {
     console.error(`Nvidia NIM:getNvidiaNimModels`, e.message);
     return { models: [], error: "Could not fetch Nvidia NIM Models" };
   }
+}
+
+async function getGeminiModels(_apiKey = null) {
+  const apiKey =
+    _apiKey === true
+      ? process.env.GEMINI_API_KEY
+      : _apiKey || process.env.GEMINI_API_KEY || null;
+  const models = await GeminiLLM.fetchModels(apiKey);
+  // Api Key was successful so lets save it for future uses
+  if (models.length > 0 && !!apiKey) process.env.GEMINI_API_KEY = apiKey;
+  return { models, error: null };
 }
 
 module.exports = {
