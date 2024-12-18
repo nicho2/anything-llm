@@ -225,7 +225,7 @@ export default function NewSQLConnection({ isOpen, closeModal, onSubmit }) {
                   </div>
                 </div>
 
-              <div className="flex flex-col">
+                <div className="flex flex-col">
                 <label className="text-white text-sm font-semibold block mb-3">
                   Database
                 </label>
@@ -240,8 +240,8 @@ export default function NewSQLConnection({ isOpen, closeModal, onSubmit }) {
                 />
               </div>
 
-              {engine === "odbc" && (
-                <div className="flex flex-col">
+                {engine === "odbc" && (
+                  <div className="flex flex-col">
                   <label className="text-white text-sm font-semibold block mb-3">
                     Driver
                   </label>
@@ -255,10 +255,11 @@ export default function NewSQLConnection({ isOpen, closeModal, onSubmit }) {
                     spellCheck={false}
                   />
                 </div>
-              )}
-              <p className="text-white/40 text-sm">
+                )}
+                <p className="text-white/40 text-sm">
                 {assembleConnectionString({ engine, ...config })}
               </p>
+              </div>
             </div>
             <div className="flex justify-between items-center mt-6 pt-6 border-t border-theme-modal-border px-7 pb-6">
               <button
